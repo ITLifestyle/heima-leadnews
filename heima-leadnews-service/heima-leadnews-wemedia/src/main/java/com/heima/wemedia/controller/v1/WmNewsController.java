@@ -30,4 +30,9 @@ public class WmNewsController {
     public ResponseResult downOrUp(@RequestBody WmNewsDto dto) {
         return wmNewsService.downOrUp(dto);
     }
+
+    @PostMapping("/list_vo")
+    public ResponseResult listVo(@RequestBody WmNewsPageReqDto dto) {
+        return wmNewsService.listVo(dto);
+    }
 }

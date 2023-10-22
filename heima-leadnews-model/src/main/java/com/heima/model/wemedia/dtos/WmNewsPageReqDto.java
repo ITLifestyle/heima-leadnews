@@ -9,9 +9,27 @@ import java.util.Date;
 public class WmNewsPageReqDto extends PageRequestDto {
 
     /**
-     * 状态
+     * id
+     */
+    private Long id;
+
+    /**
+     * 标题
+     */
+    private String title;
+
+    /**
+     * 当前状态
+     0 草稿
+     1 提交（待审核）
+     2 审核失败
+     3 人工审核
+     4 人工审核通过
+     8 审核通过（待发布）
+     9 已发布
      */
     private Short status;
+
     /**
      * 开始时间
      */
@@ -28,4 +46,9 @@ public class WmNewsPageReqDto extends PageRequestDto {
      * 关键字
      */
     private String keyword;
+
+    /**
+     * 消息
+     */
+    private String msg;
 }

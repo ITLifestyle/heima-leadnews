@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.heima.wemedia.mapper.WmNewsMapper">
+
+    <select id="findList" resultType="com.heima.model.wemedia.vos.WmNewsVo" parameterType="com.heima.model.wemedia.dtos.WmNewsPageReqDto">
+        select
+            n.*,
+            u.name author_name
+        from
+            wm_news n
+        left join wm_user u on u.id = n.user_id
+        <where>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(title)">
+                and n.title like CONCAT('%', #{title}, '%')
+            </if>
+
+            <if test="status != null">
+                and n.status = #{status}
+            </if>
+        </where>
+        order by n.submited_time desc
+        limit #{dbOffset}, #{size}
+    </select>
+
+    <select id="findListCount" resultType="java.lang.Integer" parameterType="com.heima.model.wemedia.dtos.WmNewsPageReqDto">
+        select
+            count(*)
+        from
+            wm_news n
+        <where>
+            <if test="@org.apache.commons.lang3.StringUtils@isNotBlank(title)">
+                and n.title like CONCAT('%', #{title}, '%')
+            </if>
+
+            <if test="status != null">
+                and n.status = #{status}
+            </if>
+        </where>
+    </select>
+
+</mapper>

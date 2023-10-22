@@ -18,10 +18,12 @@ import com.heima.model.wemedia.dtos.WmNewsPageReqDto;
 import com.heima.model.wemedia.pojos.WmMaterial;
 import com.heima.model.wemedia.pojos.WmNews;
 import com.heima.model.wemedia.pojos.WmNewsMaterial;
+import com.heima.model.wemedia.vos.WmNewsVo;
 import com.heima.utils.thread.WmThreadLocalUtil;
 import com.heima.wemedia.mapper.WmMaterialMapper;
 import com.heima.wemedia.mapper.WmNewsMapper;
 import com.heima.wemedia.mapper.WmNewsMaterialMapper;
+import com.heima.wemedia.mapper.WmUserMapper;
 import com.heima.wemedia.service.WmNewsAutoScanService;
 import com.heima.wemedia.service.WmNewsService;
 import com.heima.wemedia.service.WmNewsTaskService;
@@ -39,7 +41,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @Transactional
-public class WmNewsServiceImpl  extends ServiceImpl<WmNewsMapper, WmNews> implements WmNewsService {
+public class WmNewsServiceImpl extends ServiceImpl<WmNewsMapper, WmNews> implements WmNewsService {
 
     @Autowired
     private WmNewsMaterialMapper wmNewsMaterialMapper;
@@ -55,39 +57,16 @@ public class WmNewsServiceImpl  extends ServiceImpl<WmNewsMapper, WmNews> implem
      */
     @Override
     public ResponseResult findList(WmNewsPageReqDto dto) {
-        // 1. 检查参数
-        // 分页检查
+        //1.参数检查
         dto.checkParam();
 
-        // 2. 分页条件查询
-        IPage page = new Page(dto.getPage(), dto.getSize());
-        LambdaQueryWrapper<WmNews> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        // 状态查询
-        if (dto.getStatus() != null) {
-            lambdaQueryWrapper.eq(WmNews::getStatus, dto.getStatus());
-        }
-        // 频道查询
-        if (dto.getChannelId() != null) {
-            lambdaQueryWrapper.eq(WmNews::getChannelId, dto.getChannelId());
-        }
-        // 时间范围查询
-        if (dto.getBeginPubDate() != null && dto.getEndPubDate() != null) {
-            lambdaQueryWrapper.between(WmNews::getPublishTime, dto.getBeginPubDate(), dto.getEndPubDate());
-        }
-        // 关键字的模糊查询
-        if (StringUtils.isNotBlank(dto.getKeyword())) {
-            lambdaQueryWrapper.like(WmNews::getTitle, dto.getKeyword());
-        }
-        // 查询当前登录人的文章
-        lambdaQueryWrapper.eq(WmNews::getUserId, WmThreadLocalUtil.getUser().getId());
-        // 按照发布时间倒序查询
-        lambdaQueryWrapper.orderByDesc(WmNews::getPublishTime);
-        page = page(page, lambdaQueryWrapper);
+        //2.分页查询
+        List<WmNewsVo> wmNewsVoList = baseMapper.findList(dto);
+        int count = baseMapper.findListCount(dto);
 
-        // 3. 结果返回
-        ResponseResult responseResult = new PageResponseResult(dto.getPage(), dto.getSize(), (int) page.getTotal());
-        responseResult.setData(page.getRecords());
-
+        //3.结果返回
+        ResponseResult responseResult = new PageResponseResult(dto.getPage(), dto.getSize(), count);
+        responseResult.setData(wmNewsVoList);
         return responseResult;
     }
 
@@ -140,7 +119,7 @@ public class WmNewsServiceImpl  extends ServiceImpl<WmNewsMapper, WmNews> implem
      * 1. 如果内容图片大于等于1 小于3 单图 type 1
      * 2. 如果内容图片大于等于3 多图 type 3
      * 3. 如果内容没有图片 无图 type 0
-     *
+     * <p>
      * 第二个功能: 保存封面图片与素材的关系
      *
      * @param dto
@@ -281,5 +260,20 @@ public class WmNewsServiceImpl  extends ServiceImpl<WmNewsMapper, WmNews> implem
         }
 
         return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS);
+    }
+
+    @Override
+    public ResponseResult listVo(WmNewsPageReqDto dto) {
+        //1.参数检查
+        dto.checkParam();
+
+        //2.分页查询
+        List<WmNewsVo> wmNewsVoList = baseMapper.findList(dto);
+        int count = baseMapper.findListCount(dto);
+
+        //3.结果返回
+        ResponseResult responseResult = new PageResponseResult(dto.getPage(), dto.getSize(), count);
+        responseResult.setData(wmNewsVoList);
+        return responseResult;
     }
 }

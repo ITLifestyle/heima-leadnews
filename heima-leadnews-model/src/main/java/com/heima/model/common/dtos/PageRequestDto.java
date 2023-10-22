@@ -18,4 +18,9 @@ public class PageRequestDto {
             setSize(10);
         }
     }
+
+    public Integer getDbOffset() {
+        checkParam();
+        return (page - 1) * size;
+    }
 }
