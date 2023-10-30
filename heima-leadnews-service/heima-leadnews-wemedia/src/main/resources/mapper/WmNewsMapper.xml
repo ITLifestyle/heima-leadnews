@@ -17,6 +17,10 @@
             <if test="status != null">
                 and n.status = #{status}
             </if>
+
+            <if test="id != null">
+                and n.id = #{id}
+            </if>
         </where>
         order by n.submited_time desc
         limit #{dbOffset}, #{size}

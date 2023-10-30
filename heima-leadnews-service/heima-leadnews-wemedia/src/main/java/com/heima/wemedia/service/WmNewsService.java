@@ -17,4 +17,14 @@ public interface WmNewsService extends IService<WmNews> {
     ResponseResult downOrUp(WmNewsDto dto);
 
     ResponseResult listVo(WmNewsPageReqDto dto);
+
+    ResponseResult findOneVo(Long id);
+
+    /**
+     * 审批
+     *
+     * @param wmNewsDto
+     * @return
+     */
+    ResponseResult audit(WmNewsPageReqDto wmNewsDto);
 }

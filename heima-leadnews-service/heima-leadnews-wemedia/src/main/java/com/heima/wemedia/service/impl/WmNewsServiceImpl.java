@@ -276,4 +276,54 @@ public class WmNewsServiceImpl extends ServiceImpl<WmNewsMapper, WmNews> impleme
         responseResult.setData(wmNewsVoList);
         return responseResult;
     }
+
+    @Override
+    public ResponseResult findOneVo(Long id) {
+        // 1. 检查参数
+        if (id == null) {
+            return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_REQUIRE, "缺少id参数!");
+        }
+
+        // 2. 设置参数
+        WmNewsPageReqDto dto = new WmNewsPageReqDto();
+        dto.setId(id);
+
+        // 3. 查询数据
+        List<WmNewsVo> list = baseMapper.findList(dto);
+        if (list.isEmpty()) {
+            return ResponseResult.errorResult(AppHttpCodeEnum.DATA_NOT_EXIST);
+        }
+
+        return ResponseResult.okResult(list.get(0));
+    }
+
+    @Override
+    public ResponseResult audit(WmNewsPageReqDto wmNewsDto) {
+        // 1. 参数检查
+        if (wmNewsDto.getId() == null) {
+            return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_REQUIRE, "id不能为空!");
+        }
+        if (wmNewsDto.getStatus() == null) {
+            return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_REQUIRE, "status不能为空!");
+        }
+
+        // 2. 查询数据并更新
+        WmNews wmNews = baseMapper.selectById(wmNewsDto.getId());
+        if (wmNews == null) {
+            return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID, "id无效!");
+        }
+
+        // 3. 更新
+        wmNews.setReason(wmNewsDto.getMsg());
+        wmNews.setStatus(wmNews.getStatus());
+        baseMapper.updateById(wmNews);
+
+        // 4. 审核通过, 创建自媒体文章
+        if (wmNewsDto.getStatus().equals((short) 8)) {
+            // 4.1 将消息发布到任务中
+            wmNewsTaskService.addNewsToTask(wmNews.getId(), wmNews.getPublishTime());
+        }
+
+        return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getErrorMessage());
+    }
 }
