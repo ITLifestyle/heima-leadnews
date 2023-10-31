@@ -4,9 +4,18 @@ import lombok.Data;
 
 @Data
 public class UserRelationDto {
+    /**
+     * 文章id
+     */
     private Long articleId;
 
+    /**
+     * 作者id
+     */
     private Long authorId;
 
+    /**
+     * 0 关注 1 取消
+     */
     private Short operation;
 }

@@ -8,4 +8,6 @@ public class UserConstants {
     public static final Short AUTH_FAIL = 2;
 
     public static final Short AUTH_PASS = 9;
+
+    public static final String REDIS_USER_FOLLOW_KEY = "USER:FOLLOW";
 }
