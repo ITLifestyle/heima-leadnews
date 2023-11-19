@@ -44,11 +44,12 @@ public class WmNewsTaskServiceImpl implements WmNewsTaskService {
     @Override
     @Scheduled(fixedRate = 1000)
     public void scanNewsByTask() {
-        log.info("消费任务, 审核文章");
+        // log.info("消费任务, 审核文章");
         ResponseResult responseResult = scheduleClient.poll(TaskTypeEnum.NEWS_SCAN_TIME.getTaskType(), TaskTypeEnum.NEWS_SCAN_TIME.getPriority());
         if (responseResult.getCode().equals(200) && responseResult.getData() != null) {
             Task task = JSON.parseObject(JSON.toJSONString(responseResult.getData()), Task.class);
             WmNews wmNews = ProtostuffUtil.deserialize(task.getParameters(), WmNews.class);
+            log.info("审核文章: {}, {}", wmNews.getId(), wmNews.getTitle());
             wmNewsAutoScanService.autoScanWmNews(wmNews.getId());
         }
     }

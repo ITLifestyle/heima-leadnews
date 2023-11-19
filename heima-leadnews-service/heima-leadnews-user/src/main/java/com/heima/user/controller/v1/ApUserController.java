@@ -16,7 +16,7 @@ public class ApUserController {
     @Autowired
     private ApUserService apUserService;
 
-    @PostMapping("/user_follow")
+    @PostMapping("/user_follow/")
     public ResponseResult follow(@RequestBody UserRelationDto relDto) {
         return apUserService.follow(relDto);
     }

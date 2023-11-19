@@ -55,7 +55,7 @@ public class WmNewsAutoScanServiceImpl implements WmNewsAutoScanService {
             throw new RuntimeException("WmNewsAutoScanServiceImpl-文章不存在!");
         }
 
-        if (wmNews.getStatus().equals(WmNews.Status.SUBMIT.getCode())) {
+        if (wmNews.getStatus().equals(WmNews.Status.SUBMIT.getCode()) || wmNews.getStatus().equals(WmNews.Status.SUCCESS.getCode())) {
             // 从文档中抽取图片
             Map<String, Object> textAndImages = handleTextAndImages(wmNews);
 

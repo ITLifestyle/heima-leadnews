@@ -315,14 +315,17 @@ public class WmNewsServiceImpl extends ServiceImpl<WmNewsMapper, WmNews> impleme
 
         // 3. 更新
         wmNews.setReason(wmNewsDto.getMsg());
-        wmNews.setStatus(wmNews.getStatus());
-        baseMapper.updateById(wmNews);
+        wmNews.setStatus(wmNewsDto.getStatus());
 
         // 4. 审核通过, 创建自媒体文章
-        if (wmNewsDto.getStatus().equals((short) 8)) {
+        if (wmNewsDto.getStatus().equals(WmNews.Status.ADMIN_SUCCESS.getCode())) {
             // 4.1 将消息发布到任务中
             wmNewsTaskService.addNewsToTask(wmNews.getId(), wmNews.getPublishTime());
+            wmNews.setStatus(WmNews.Status.SUCCESS.getCode());
         }
+
+        // 5. 更新文章信息
+        baseMapper.updateById(wmNews);
 
         return ResponseResult.okResult(AppHttpCodeEnum.SUCCESS.getCode(), AppHttpCodeEnum.SUCCESS.getErrorMessage());
     }

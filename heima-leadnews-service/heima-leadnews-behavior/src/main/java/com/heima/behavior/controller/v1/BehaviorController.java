@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/api/v1")
 public class BehaviorController {
 
     @Autowired
     private BehaviorService behaviorService;
 
-    @PostMapping("/likes_behavior")
+    @PostMapping("/likes_behavior/")
     public ResponseResult likesBehavior(@RequestBody LikesBehaviorDto likesBehaviorDto) {
         return behaviorService.like(likesBehaviorDto);
     }
@@ -29,13 +29,8 @@ public class BehaviorController {
         return behaviorService.readCount(countBehaviorDto);
     }
 
-    @PostMapping("/un_likes_behavior")
+    @PostMapping("/un_likes_behavior/")
     public ResponseResult unLikesBehavior(@RequestBody UnLikesBehaviorDto unLikesBehaviorDto) {
         return behaviorService.unlike(unLikesBehaviorDto);
-    }
-
-    @PostMapping("/collection_behavior")
-    public ResponseResult collectionBehavior(@RequestBody CollectionBehaviorDto collectionBehaviorDto) {
-        return behaviorService.collection(collectionBehaviorDto);
     }
 }

@@ -4,6 +4,7 @@ import com.heima.article.service.ApArticleService;
 import com.heima.common.constants.ArticleConstants;
 import com.heima.model.article.dtos.ArticleHomeDto;
 import com.heima.model.article.dtos.ArticleInfoDto;
+import com.heima.model.behavior.dtos.CollectionBehaviorDto;
 import com.heima.model.common.dtos.ResponseResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -40,6 +41,6 @@ public class ArticleHomeController {
 
     @PostMapping("/load_article_behavior")
     public ResponseResult loadArticleBehavior(@RequestBody ArticleInfoDto articleInfoDto) {
-        return ResponseResult.okResult();
+        return apArticleService.loadArticleBehavior(articleInfoDto);
     }
 }

@@ -1,5 +1,5 @@
 server:
-  port: 51701
+  port: 51709
 spring:
   application:
     name: leadnews-schedule

@@ -30,13 +30,4 @@ public interface BehaviorService {
      * @return
      */
     ResponseResult unlike(UnLikesBehaviorDto unLikesBehaviorDto);
-
-
-    /**
-     * 收藏操作
-     *
-     * @param collectionBehaviorDto
-     * @return
-     */
-    ResponseResult collection(CollectionBehaviorDto collectionBehaviorDto);
 }

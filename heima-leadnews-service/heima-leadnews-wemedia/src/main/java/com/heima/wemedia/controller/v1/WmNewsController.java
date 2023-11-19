@@ -39,15 +39,13 @@ public class WmNewsController {
         return wmNewsService.findOneVo(id);
     }
 
-    @GetMapping("/auth_fail")
+    @PostMapping("/auth_fail")
     public ResponseResult auditFail(@RequestBody WmNewsPageReqDto wmNewsDto) {
-        wmNewsDto.setStatus((short) 2);
         return wmNewsService.audit(wmNewsDto);
     }
 
-    @GetMapping("/auth_pass")
+    @PostMapping ("/auth_pass")
     public ResponseResult auditPass(@RequestBody WmNewsPageReqDto wmNewsDto) {
-        wmNewsDto.setStatus((short) 8);
         return wmNewsService.audit(wmNewsDto);
     }
 }

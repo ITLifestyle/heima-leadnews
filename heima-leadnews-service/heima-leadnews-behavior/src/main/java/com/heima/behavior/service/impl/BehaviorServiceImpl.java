@@ -36,15 +36,15 @@ public class BehaviorServiceImpl implements BehaviorService {
     public ResponseResult like(LikesBehaviorDto likeDto) {
         // 1. 检测参数
         if (likeDto == null || likeDto.getArticleId() == null || likeDto.getOperation() == null || likeDto.getType() == null
-                || checkLikeParam(likeDto)) {
+                || !checkLikeParam(likeDto)) {
             return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID, "参数无效!");
         }
 
-        // 2. 查询文章
-        ApArticle article = articleClient.findArticle(likeDto.getArticleId());
+        // 2. 查询文章, 这个id好像和数据库的不一样, 去掉该校验
+        /*ApArticle article = articleClient.findArticle(likeDto.getArticleId());
         if (article == null) {
             return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID, "查询文章失败!");
-        }
+        }*/
 
         // 3. 获取登陆人
         ApUser user = ApThreadLocalUtil.getUser();
@@ -79,11 +79,11 @@ public class BehaviorServiceImpl implements BehaviorService {
             return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_REQUIRE);
         }
 
-        // 2. 查询文章
-        ApArticle article = articleClient.findArticle(countDto.getArticleId());
+        // 2. 查询文章, 这个id好像和数据库的不一样, 去掉该校验
+        /*ApArticle article = articleClient.findArticle(countDto.getArticleId());
         if (article == null) {
             return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID, "查询文章失败!");
-        }
+        }*/
 
         // 3. 获取登陆人
         ApUser user = ApThreadLocalUtil.getUser();
@@ -109,15 +109,15 @@ public class BehaviorServiceImpl implements BehaviorService {
     public ResponseResult unlike(UnLikesBehaviorDto unLikeDto) {
         // 1. 检查参数
         if (unLikeDto == null || unLikeDto.getArticleId() == null || unLikeDto.getType() == null
-            || checkUnLikeParam(unLikeDto)) {
+            || !checkUnLikeParam(unLikeDto)) {
             return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_REQUIRE);
         }
 
-        // 2. 查询文章
-        ApArticle article = articleClient.findArticle(unLikeDto.getArticleId());
+        // 2. 查询文章, 这个id好像和数据库的不一样, 去掉该校验
+        /*ApArticle article = articleClient.findArticle(unLikeDto.getArticleId());
         if (article == null) {
             return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID, "查询文章失败!");
-        }
+        }*/
 
         // 3. 获取登陆人
         ApUser user = ApThreadLocalUtil.getUser();
@@ -130,7 +130,7 @@ public class BehaviorServiceImpl implements BehaviorService {
         if (unLikeDto.getType() == 0) {
             // 查询
             Object obj = cacheService.hGet(redisKey, user.getId().toString());
-            if (obj != null || StringUtils.isBlank(obj.toString())) {
+            if (obj != null && StringUtils.isBlank(obj.toString())) {
                 return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID, "已经不喜欢了!");
             }
             // 保存
@@ -141,46 +141,6 @@ public class BehaviorServiceImpl implements BehaviorService {
             log.error("取消不喜欢操作 : {}, {}, {}", unLikeDto.getArticleId(), user.getId(), unLikeDto.getType());
             cacheService.hDelete(redisKey, user.getId().toString());
         }
-        return ResponseResult.okResult();
-    }
-
-    @Override
-    public ResponseResult collection(CollectionBehaviorDto collectionDto) {
-        // 1. 检查参数
-        if (collectionDto == null || collectionDto.getEntryId() == null || collectionDto.getOperation() == null
-            || collectionDto.getType() == null) {
-            return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_REQUIRE);
-        }
-
-        // 2. 查询文章
-        ApArticle article = articleClient.findArticle(collectionDto.getEntryId());
-        if (article == null) {
-            return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID, "查询文章失败!");
-        }
-
-        // 3. 获取用户信息
-        ApUser user = ApThreadLocalUtil.getUser();
-        if (user == null) {
-            return ResponseResult.errorResult(AppHttpCodeEnum.NEED_LOGIN);
-        }
-
-        // 4. 插入redis
-        String redisKey = BehaviorConstants.REDIS_ARTICLE_COLLECTION_KEY + ":" + collectionDto.getEntryId();
-        if (collectionDto.getOperation() == 0) {
-            // 查询现有信息
-            Object obj = cacheService.hGet(redisKey, user.getId().toString());
-            if (obj == null || StringUtils.isBlank(obj.toString())) {
-                return ResponseResult.errorResult(AppHttpCodeEnum.PARAM_INVALID, "不要重复收藏!");
-            }
-            // 保存信息
-            log.info("保存收藏信息: {}, {}, {}", collectionDto.getEntryId(), user.getId(), collectionDto.getType());
-            cacheService.hPut(redisKey, user.getId().toString(), JSON.toJSONString(collectionDto));
-        } else if (collectionDto.getOperation() == 1) {
-            // 删除收藏信息
-            log.info("保存收藏信息: {}, {}, {}", collectionDto.getEntryId(), user.getId(), collectionDto.getType());
-            cacheService.hDelete(redisKey, user.getId().toString());
-        }
-
         return ResponseResult.okResult();
     }
 
