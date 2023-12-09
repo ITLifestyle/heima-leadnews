@@ -1,0 +1,12 @@
+xxl:
+  job:
+    admin:
+      addresses: http://192.168.200.130:8888/xxl-job-admin
+    executor:
+      # appname: xxl-job-executor-sample
+      appname: xxl-job-executor-sample-shard
+      # 端口, 多实例不要重复
+      port: ${executor.port:9999}
+
+server:
+  port: ${port:8881}

@@ -24,5 +24,6 @@
         <module>kafka-demo</module>
         <module>es-init</module>
         <module>mongo-demo</module>
+        <module>xll-job-demo</module>
     </modules>
 </project>

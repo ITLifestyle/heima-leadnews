@@ -27,4 +27,12 @@ public interface IWemediaClient {
      */
     @PostMapping("/api/v1/user/save")
     ResponseResult save(@RequestBody WmUser wmUser);
+
+    /**
+     * 获取频道列表
+     *
+     * @return
+     */
+    @GetMapping("/api/v1/channel/list")
+    ResponseResult getChannels();
 }

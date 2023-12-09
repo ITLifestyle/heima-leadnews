@@ -29,9 +29,12 @@ public class ProducerQuickStart {
          * 第二个参数为 : 消息的 key
          * 第二个参数为 : 消息的 value
          */
-        ProducerRecord<String, String> producerRecord = new ProducerRecord<>("topic-first", "key-001", "heloo kafka");
+        for (int i = 0; i < 5; i++) {
+            ProducerRecord<String, String> producerRecord = new ProducerRecord<>("itcast-topic-input", "hello kafka");
+            producer.send(producerRecord);
+        }
         // 异步的方式发送消息
-        producer.send(producerRecord, new Callback() {
+        /*producer.send(producerRecord, new Callback() {
             @Override
             public void onCompletion(RecordMetadata recordMetadata, Exception e) {
                 if (e != null) {
@@ -41,11 +44,11 @@ public class ProducerQuickStart {
                 // 获取偏移量
                 System.out.println(recordMetadata.offset());
             }
-        });
+        });*/
 
-        /*// 消息信息
-        RecordMetadata recordMetadata = producer.send(producerRecord).get();
-        // 获取偏移量
+        // 消息信息
+        // RecordMetadata recordMetadata = producer.send(producerRecord).get();
+        /*// 获取偏移量
         System.out.println(recordMetadata.offset());*/
 
 

@@ -19,4 +19,9 @@ public class IWemediaClientFallback implements IWemediaClient {
     public ResponseResult save(WmUser wmUser) {
         return ResponseResult.errorResult(AppHttpCodeEnum.SERVER_ERROR, "保存错误!");
     }
+
+    @Override
+    public ResponseResult getChannels() {
+        return ResponseResult.errorResult(AppHttpCodeEnum.SERVER_ERROR, "查询错误!");
+    }
 }

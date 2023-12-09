@@ -24,7 +24,7 @@ public class ArticleHomeController {
     @RequestMapping("/load")
     @ApiOperation("加载新闻信息")
     public ResponseResult load(@RequestBody ArticleHomeDto articleHomeDto) {
-        return apArticleService.load(articleHomeDto, ArticleConstants.LOADTYPE_LOAD_MORE);
+        return apArticleService.load2(articleHomeDto, ArticleConstants.LOADTYPE_LOAD_MORE, true);
     }
 
     @RequestMapping("/loadmore")
